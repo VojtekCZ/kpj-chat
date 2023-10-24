@@ -5,6 +5,13 @@
      <groupId>cz.inventi.kpj</groupId>
     <artifactId>kpj-chat-api</artifactId>
     <packaging>jar</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>com.azure.resourcemanager</groupId>
+            <artifactId>azure-resourcemanager-botservice</artifactId>
+            <version>1.0.0-beta.5</version>
+        </dependency>
+    </dependencies>
     <version>1.0.0-SNAPSHOT</version>
 
 </project>

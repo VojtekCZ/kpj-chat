@@ -1,6 +1,7 @@
 package cz.inventi.kpj.chat.service;
 
 import cz.inventi.kpj.chat.mapper.MessageMapper;
+import cz.inventi.kpj.chat.mapper.MessageMapperImpl;
 import cz.inventi.kpj.chat.messaging.MessageBroker;
 import cz.inventi.kpj.chat.messaging.MessageListener;
 import cz.inventi.kpj.chat.model.MessageEvent;
@@ -43,16 +44,42 @@ public class MessageServiceImpl implements MessageService, MessageListener {
     @Override
     public UUID createMessage(MessageRequest messageRequest) {
         // TODO: map messageRequest to messageEvent; set type, id and created; publish messageEvent via messageBroker and return its id
+        MessageEvent messageEvent = messageMapper.requestToEvent(messageRequest);
+        messageEvent.setType(MessageType.MESSAGE);
+        messageEvent.setId(UUID.randomUUID());
+        messageEvent.setCreated(OffsetDateTime.now());
+        messageBroker.publish(messageEvent);
         return UUID.randomUUID();
     }
 
     @Override
     public void onMessage(MessageEvent messageEvent) {
         // TODO: switch over messageEvent type; if it is a message, map it to Message and add it to messages list; if it is a presence check, just log it; if it is an unknown type, log a warning
+       switch (messageEvent.getType()) {
+            case MESSAGE:
+                Message message = messageMapper.eventToDTO(messageEvent);
+                messages.add(message);
+                break;
+            case PRESENCE:
+                log.info("Received presence check.");
+                break;
+            default:
+                log.warn("Received message of unknown type: {}", messageEvent.getType());
+                break;
+        }
+
     }
 
     // TODO: execute every 10 seconds (*/10 * * * * *)
+    @Scheduled(cron = "*/10 * * * * *")
     public void sendPresence() {
         // TODO: create a new messageEvent with type PRESENCE, id, created and name; publish it via messageBroker and log an info message
+        MessageEvent presenceEvent = new MessageEvent();
+        presenceEvent.setType(MessageType.PRESENCE);
+        presenceEvent.setId(UUID.randomUUID());
+        presenceEvent.setName("Presence");
+        presenceEvent.setCreated(OffsetDateTime.now());
+        messageBroker.publish(presenceEvent);
+
     }
 }
