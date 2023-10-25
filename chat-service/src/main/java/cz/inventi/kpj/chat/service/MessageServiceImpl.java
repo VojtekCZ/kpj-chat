@@ -49,7 +49,7 @@ public class MessageServiceImpl implements MessageService, MessageListener {
         messageEvent.setId(UUID.randomUUID());
         messageEvent.setCreated(OffsetDateTime.now());
         messageBroker.publish(messageEvent);
-        return UUID.randomUUID();
+        return messageEvent.getId();
     }
 
     @Override
@@ -61,7 +61,7 @@ public class MessageServiceImpl implements MessageService, MessageListener {
                 messages.add(message);
                 break;
             case PRESENCE:
-                log.info("Received presence check.");
+                log.info("Každých deset sekund se napíše tato blbost: Received presence check.");
                 break;
             default:
                 log.warn("Received message of unknown type: {}", messageEvent.getType());
