@@ -61,7 +61,7 @@ public class MessageServiceImpl implements MessageService, MessageListener {
                 messages.add(message);
                 break;
             case PRESENCE:
-                log.info("Každých deset sekund se napíše tato blbost: Received presence check.");
+                log.info("Received presence check.");
                 break;
             default:
                 log.warn("Received message of unknown type: {}", messageEvent.getType());
