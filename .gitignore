@@ -32,3 +32,4 @@ build/
 
 ### Javascript ###
 node_modules/
+/chat-service/src/main/resources/*
